@@ -1,4 +1,4 @@
-Welcome to your new TanStack Start app! 
+Welcome to your new TanStack Start app!
 
 # Getting Started
 
@@ -8,6 +8,61 @@ To run this application:
 npm install
 npm run dev
 ```
+
+## Database & seeding (Pokedex)
+
+Local data is PostgreSQL + [Drizzle ORM](https://orm.drizzle.team/). [PokeAPI](https://pokeapi.co/) is the source of truth for the seed.
+
+1. **Start Postgres** (Docker must be running):
+
+   ```bash
+   npm run db:up
+   ```
+
+2. **Apply schema** (creates all Pokedex tables):
+
+   ```bash
+   npm run db:push
+   ```
+
+3. **Seed from PokeAPI** (first run can take a while; responses are cached under `.seed-cache/` so re-runs are fast):
+
+   ```bash
+   npm run db:seed
+   ```
+
+4. **Inspect data** (optional):
+
+   ```bash
+   npm run db:studio
+   ```
+
+Other scripts:
+
+- `npm run db:down` — stop containers (data kept in the Docker volume).
+- `npm run db:reset` — remove the volume, start fresh, `db:push`, then full `db:seed`.
+
+Set `DATABASE_URL` in `.env.local` (default matches `docker-compose.yml`).
+
+**Seed CLI flags**
+
+- `--no-cache` — ignore `.seed-cache` and refetch everything.
+- `--concurrency=8` — max in-flight HTTP requests (default `8`).
+- `--only=stages` — comma-separated subset, e.g. `--only=generations,species,pokemon`.
+- `--limit=N` — only process the first `N` entries from each list endpoint (smoke test).
+
+**Rough row counts after a full seed**
+
+| Table             | Approx. count         |
+| ----------------- | --------------------- |
+| `pokemon`         | ~1,300                |
+| `pokemon_species` | ~1,025                |
+| `moves`           | ~900                  |
+| `abilities`       | ~300–400              |
+| `types`           | 20                    |
+| `pokemon_moves`   | large (all learnsets) |
+
+Spot-check Pikachu (`pokemon.id = 25`): types, abilities, `pokemon_stats`, and many rows in `pokemon_moves` should be present.
 
 # Building For Production
 
@@ -40,7 +95,6 @@ If you prefer not to use Tailwind CSS:
 
 ## Linting & Formatting
 
-
 This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
 
 ```bash
@@ -48,8 +102,6 @@ npm run lint
 npm run format
 npm run check
 ```
-
-
 
 ## Routing
 
@@ -68,7 +120,7 @@ Now that you have two routes you can use a `Link` component to navigate between 
 To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
 
 ```tsx
-import { Link } from "@tanstack/react-router";
+import { Link } from '@tanstack/react-router'
 ```
 
 Then anywhere in your JSX you can use it like so:
@@ -136,11 +188,11 @@ const getServerTime = createServerFn({
 // Use in a component
 function MyComponent() {
   const [time, setTime] = useState('')
-  
+
   useEffect(() => {
     getServerTime().then(setTime)
   }, [])
-  
+
   return <div>Server time: {time}</div>
 }
 ```

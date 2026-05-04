@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pokedex_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pokemon
+      POSTGRES_PASSWORD: pokemon
+      POSTGRES_DB: pokedex
+    ports:
+      - '5432:5432'
+    volumes:
+      - pokedex_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U pokemon -d pokedex']
+      interval: 2s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  pokedex_pgdata:
