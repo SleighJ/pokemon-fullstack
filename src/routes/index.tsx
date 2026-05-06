@@ -11,18 +11,19 @@ function App() {
   const { pokemon }: { pokemon: Pokemon[] } = Route.useLoaderData();
 
   return (
-    <main>
+    <main style={{ overflow: 'auto' }}>
 
       {pokemon.map((item, i) => {
-        const { id, name, image } = item;
+        const { id, name, images } = item;
         const pokemonKey = `${i}-${id}-${name}`;
-        console.log(image)
+        // TODO: use an icon/fallback for image when not populated
+        const frontImage = images.front_default || undefined;
         return (
           <div
             key={pokemonKey}
             style={{ height: '64px', width: '64px' }}
           >
-            <img src={image.front_default} />
+            <img src={frontImage} />
             <span>{name}</span>
           </div>
         )

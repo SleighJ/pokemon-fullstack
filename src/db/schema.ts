@@ -11,6 +11,7 @@ import {
   uniqueIndex,
   index,
 } from 'drizzle-orm/pg-core'
+import type { Sprites } from '#/server/types/db_pokemon.types'
 
 /* ------------------------------------------------------------------ */
 /* Reference tables                                                    */
@@ -210,7 +211,7 @@ export const pokemon = pgTable(
     baseExperience: integer('base_experience'),
     order: integer('order'),
     isDefault: boolean('is_default').notNull().default(true),
-    sprites: jsonb('sprites'),
+    sprites: jsonb('sprites').$type<Sprites>(),
     cryLatestUrl: text('cry_latest_url'),
     cryLegacyUrl: text('cry_legacy_url'),
   },
