@@ -29,6 +29,7 @@ export const queryAllPokemon = async ({
       id: pokemon.id,
       name: pokemon.name,
       order: pokemon.order,
+      image: pokemon.sprites,
     })
     .from(pokemon)
     .orderBy(asc(pokemon.name))
