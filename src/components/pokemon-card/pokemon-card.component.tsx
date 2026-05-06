@@ -11,7 +11,7 @@ export const PokemonCard = ({
   return (
     <div className={pokemonCardStyle}>
       <div
-        style={{ height: '64px', width: '64px' }}
+        style={{ height: '64px', width: '64px', border: '1px solid blue' }}
       >
         <img src={defaultImage} />
       </div>
