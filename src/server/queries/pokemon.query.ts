@@ -36,5 +36,5 @@ export const queryAllPokemon = async ({
     .limit(sanitizedLimit)
     .offset(offset)
 
-    return { pokemon: rows };
+    return { pokemonList: rows };
 };

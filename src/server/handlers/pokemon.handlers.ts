@@ -6,6 +6,6 @@ import {
 
 export const fetchAllPokemon = createServerFn({ method: 'GET' })
   .handler(async () => {
-    const pokemon = await queryAllPokemon(QUERY_ALL_POKEMON_PARAMS);
-    return pokemon;
+    const pokemonList = await queryAllPokemon(QUERY_ALL_POKEMON_PARAMS);
+    return pokemonList;
   });
