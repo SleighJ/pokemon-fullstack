@@ -2,26 +2,23 @@ import { asc } from 'drizzle-orm';
 
 import { db } from '#/db';
 import { pokemon } from '#/db/schema';
+import { MAX_POKEMON_QUERY_LIMIT } from '../constants';
 
-export const DEFAULT_QUERY_LIMIT = 50;
-export const MAX_QUERY_LIMIT = 100;
+export type PokemonInfinitePage = Awaited<
+  ReturnType<typeof queryInfinitePokemon>
+>;
 
-export const QUERY_ALL_POKEMON_PARAMS = {
-  page: 1,
-  limit: DEFAULT_QUERY_LIMIT,
-}
-
-interface AllPokemonQueryParams {
+interface PokemonInfiniteQueryParams {
   page: number,
   limit: number,
 }
 
-export const queryAllPokemon = async ({
+export const queryInfinitePokemon = async ({
   page,
   limit,
-}: AllPokemonQueryParams) => {
+}: PokemonInfiniteQueryParams) => {
   const sanitizedPage = Math.max(1, Math.floor(page));
-  const sanitizedLimit = Math.min(MAX_QUERY_LIMIT, Math.max(1, Math.floor(limit)));
+  const sanitizedLimit = Math.min(MAX_POKEMON_QUERY_LIMIT, Math.max(1, Math.floor(limit)));
 
   const offset = (sanitizedPage - 1) * sanitizedLimit;
   const rows = await db
@@ -33,8 +30,18 @@ export const queryAllPokemon = async ({
     })
     .from(pokemon)
     .orderBy(asc(pokemon.name))
-    .limit(sanitizedLimit)
+    .limit(sanitizedLimit + 1)
     .offset(offset)
 
-    return { pokemonList: rows };
+    const hasNextPage = rows.length > sanitizedLimit;
+    const paginatedRows = hasNextPage ? rows.slice(0, sanitizedLimit) : rows;
+
+    const result = {
+      pokemonList: paginatedRows,
+      page: sanitizedPage,
+      limit: sanitizedLimit,
+      hasNextPage,
+    }
+
+    return result;
 };

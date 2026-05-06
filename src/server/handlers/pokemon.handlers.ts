@@ -1,11 +1,22 @@
 import { createServerFn } from '@tanstack/react-start';
-import {
-  queryAllPokemon,
-  QUERY_ALL_POKEMON_PARAMS,
-} from '../queries/pokemon.query';
+import { z } from 'zod';
 
-export const fetchAllPokemon = createServerFn({ method: 'GET' })
-  .handler(async () => {
-    const pokemonList = await queryAllPokemon(QUERY_ALL_POKEMON_PARAMS);
-    return pokemonList;
+import {
+  DEFAULT_QUERY_LIMIT,
+  MAX_POKEMON_QUERY_LIMIT,
+} from '../constants';
+import { queryInfinitePokemon } from '../queries/pokemon.query';
+
+const infinitePokemonInputSchema = z.object({
+  page: z.number().int().min(1),
+  limit: z.number().int().min(1).max(MAX_POKEMON_QUERY_LIMIT).optional(),
+});
+
+export const handleInfinitePokemon = createServerFn({ method: 'GET' })
+  .inputValidator(infinitePokemonInputSchema)
+  .handler(async ({ data }) => {
+    return queryInfinitePokemon({
+      page: data.page,
+      limit: data.limit ?? DEFAULT_QUERY_LIMIT,
+    });
   });
